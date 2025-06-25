@@ -1,21 +1,23 @@
 class Solution {
-    bool rec(int i,int summ,vector<int>&arr,vector<vector<int>>&dp)
-    {
-        if(summ == 0) return true;
-        if(i == arr.size()) return false;
-        
-        if(dp[i][summ] != -1) return dp[i][summ];
-        bool take = false;
-        if(arr[i]<= summ) take = rec(i+1,summ-arr[i],arr,dp);
-    
-        bool ntake =  rec(i+1,summ,arr,dp);
-        
-        return dp[i][summ] = take || ntake;
-    }
   public:
     bool isSubsetSum(vector<int>& arr, int sum) {
         // code here
-        vector<vector<int>>dp(arr.size(),vector<int>(sum+1,-1));
-        return rec(0,sum,arr,dp);
+        vector<vector<bool>>dp(arr.size(),vector<bool>(sum+1,false));
+        for(int i=0;i<arr.size();i++)
+        {
+            dp[i][0] = true;
+        }
+        if(arr[0]<=sum) dp[0][arr[0]] = true;
+        for(int i=1;i<arr.size();i++)
+        {
+            for(int j=1;j<=sum;j++)
+            {
+                bool t = dp[i-1][j];
+                bool nt = false;
+                if(arr[i]<=j) nt = dp[i-1][j-arr[i]];
+                dp[i][j] = t | nt;
+            }
+        }
+        return dp[arr.size()-1][sum];
     }
 };
