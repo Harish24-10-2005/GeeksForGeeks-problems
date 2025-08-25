@@ -3,31 +3,38 @@ class Solution {
     int celebrity(vector<vector<int>>& mat) {
         // code here
         int n = mat.size();
-        int m = mat[0].size();
-        for(int i=0;i<n;i++)
+        int t = 0;
+        int d = n-1;
+        while(t < d)
         {
-            bool f = true;
-            for(int j=0;j<m;j++)
+            if(mat[t][d] == 1)
             {
-                if(mat[i][j] == 1 && (i==j)) continue;
-                if(mat[i][j] == 1)
+                t++;
+            }
+            else if(mat[d][t] == 1)
+            {
+                d--;
+            }
+            else
+            {
+                t++;
+                d--;
+            }
+        }
+        if(t == d)
+        {
+            // cout<<"Hi"<<endl;
+            bool f = true;
+            for(int i=0;i<n;i++)
+            {
+                if(i == t) continue;
+                if(mat[t][i]== 1|| mat[i][t] == 0)
                 {
                     f = false;
                     break;
                 }
             }
-            if(f)
-            {
-                for(int k=0;k<n;k++)
-                {
-                    if(mat[k][i] != 1)
-                    {
-                        f= false;
-                        break;
-                    }
-                }
-                if(f) return i;
-            }
+            if(f) return t;
         }
         return -1;
     }
