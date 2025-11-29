@@ -1,35 +1,39 @@
-#include<bits/stdc++.h>
-
 class Solution {
   public:
-    int parent(int x, vector<int>& par) {
-        if (par[x] == x) return x;
-        return par[x] = parent(par[x], par); 
-    }
     vector<int> jobSequencing(vector<int> &deadline, vector<int> &profit) {
         // code here
-        int maxx = 0;
-        vector<pair<int,int>>v;
-        for(int i=0;i<profit.size();i++)
+    
+        int n = deadline.size();
+        int ti = 1;
+        int cnt = 0;
+        int ans = 0;
+        priority_queue<int,vector<int>,greater<int>>pq;
+        
+        vector<pair<int,int>>vec;
+        for(int i=0;i<n;i++)
         {
-            maxx = max(maxx,deadline[i]);
-            v.push_back({profit[i],deadline[i]});
+            vec.push_back({deadline[i],profit[i]});
         }
-        sort(v.begin(), v.end(), [](pair<int,int>& a, pair<int,int>& b){
-            return a.first > b.first;
-        });
-        vector<int>par(maxx+1,false);
-        for (int i = 0; i <= maxx; i++) par[i] = i;
-        int jobs = 0;
-        int summ = 0;
-        for (auto& job : v) {
-            int slot = parent(job.second, par);
-            if (slot > 0) {
-                jobs++;
-                summ += job.first;
-                par[slot] = parent(slot - 1, par);
+        sort(vec.begin(),vec.end());
+        
+        for(int i=0;i<n;i++)
+        {
+            if(pq.size() < vec[i].first)
+            {
+                ans+= vec[i].second;
+                pq.push(vec[i].second);
+                cnt++;
+            }
+            else if(pq.top() < vec[i].second)
+            {
+                ans-=pq.top();
+                pq.pop();
+                pq.push(vec[i].second);
+                ans+=vec[i].second;
             }
         }
-        return {jobs,summ};
+        
+        
+        return {cnt,ans};
     }
 };
